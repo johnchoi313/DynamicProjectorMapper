@@ -7,16 +7,16 @@ public class OptitrackProjectorTranslator : MonoBehaviour
     public float projectorWidth;
     public float projectorHeight;
 
+    public KeyCode[] AlphaNum = new KeyCode[8];
+
     public Transform projector;
     public Transform optitrack;
     public Transform reference;
 
-    public Vector3 optitrackPos1;
-    public Vector3 projectorPos1;
+    public TrilinearInterpolator trinterp;
 
-    public Vector3 optitrackPos2;
-    public Vector3 projectorPos2;
-
+    public Vector3 projectorPos;
+    public Vector3 optitrackPos;
 
     // Start is called before the first frame update
     void Start()
@@ -28,30 +28,32 @@ public class OptitrackProjectorTranslator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            optitrackPos1 = optitrack.position;
-            projectorPos1 = reference.position;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            optitrackPos2 = optitrack.position;
-            projectorPos2 = reference.position;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
+        //Calibration keys Alpha1 to Alpha 8: Calibration Order Matters!
+        for (int i = 0; i< 8; i++) {
+            if (Input.GetKeyDown(AlphaNum[i])) {
+                trinterp.sourceCubeCorners[i] = optitrack.position;
+                trinterp.destinationCubeCorners[i] = reference.position;
+            }
         }
 
-        float x = Mathf.Lerp(optitrackPos1.x, optitrackPos2.x, (optitrack.position.x - optitrackPos1.x) / (optitrackPos2.x - optitrackPos1.x));
-        float y = Mathf.Lerp(optitrackPos1.y, optitrackPos2.y, (optitrack.position.y - optitrackPos1.y) / (optitrackPos2.y - optitrackPos1.y));
-        float z = Mathf.Lerp(optitrackPos1.z, optitrackPos2.z, (optitrack.position.z - optitrackPos1.z) / (optitrackPos2.z - optitrackPos1.z));
+        if(Input.GetKeyDown(KeyCode.Y)) //Duplicate Y corners
+        {
+            trinterp.sourceCubeCorners[2] = trinterp.sourceCubeCorners[0];
+            trinterp.sourceCubeCorners[3] = trinterp.sourceCubeCorners[1];
 
-        projector.position =  ValueMapper.Map(new Vector3(x,y,z), optitrackPos1, optitrackPos2, projectorPos1, projectorPos2, false);
+            trinterp.sourceCubeCorners[6] = trinterp.sourceCubeCorners[4];
+            trinterp.sourceCubeCorners[7] = trinterp.sourceCubeCorners[5];
 
+            trinterp.destinationCubeCorners[2] = trinterp.destinationCubeCorners[0];
+            trinterp.destinationCubeCorners[3] = trinterp.destinationCubeCorners[1];
 
+            trinterp.destinationCubeCorners[6] = trinterp.destinationCubeCorners[4];
+            trinterp.destinationCubeCorners[7] = trinterp.destinationCubeCorners[5];
+        }
+
+        projector.position = trinterp.TrilinearInterpolate(optitrack.position);
+
+        projectorPos = projector.position;
+        optitrackPos = optitrack.position;
     }
 }
