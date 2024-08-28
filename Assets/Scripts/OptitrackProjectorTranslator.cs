@@ -15,8 +15,9 @@ public class OptitrackProjectorTranslator : MonoBehaviour
 
     public TrilinearInterpolator trinterp;
 
-    public Vector3 projectorPos;
-    public Vector3 optitrackPos;
+    public Vector3 projectorPos; //Diagnostic only
+    public Vector3 optitrackPos; //Diagnostic only
+    public Vector3 rotateOffset;
 
     // Start is called before the first frame update
     void Start()
@@ -51,9 +52,17 @@ public class OptitrackProjectorTranslator : MonoBehaviour
             trinterp.destinationCubeCorners[7] = trinterp.destinationCubeCorners[5];
         }
 
+        if(Input.GetKeyDown(KeyCode.R)) //Get rotation offset
+        {
+            rotateOffset = optitrack.eulerAngles;
+        }
+
         projector.position = trinterp.TrilinearInterpolate(optitrack.position);
 
         projectorPos = projector.position;
         optitrackPos = optitrack.position;
+
+        projector.rotation = optitrack.rotation;
+        projector.Rotate(-rotateOffset);
     }
 }
