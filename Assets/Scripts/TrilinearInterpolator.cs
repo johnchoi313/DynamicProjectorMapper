@@ -38,7 +38,7 @@ public class TrilinearInterpolator : MonoBehaviour
     private Vector3 GetInterpolationFactors(Vector3 input, Vector3 minCorner, Vector3 maxCorner)
     {
         float xd = 1-Mathf.InverseLerp(minCorner.x, maxCorner.x, input.x);
-        float yd = 1-Mathf.InverseLerp(minCorner.y, maxCorner.y, input.y);
+        float yd = Mathf.InverseLerp(minCorner.y, maxCorner.y, input.y);
         float zd = 1-Mathf.InverseLerp(minCorner.z, maxCorner.z, input.z);
 
         return new Vector3(xd, yd, zd);

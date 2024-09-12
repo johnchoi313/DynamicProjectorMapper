@@ -62,7 +62,13 @@ public class OptitrackProjectorTranslator : MonoBehaviour
         projectorPos = projector.position;
         optitrackPos = optitrack.position;
 
-        projector.rotation = optitrack.rotation;
-        projector.Rotate(-rotateOffset);
+
+        projector.rotation = Quaternion.identity;
+        //projector.rotation = Quaternion.Inverse(optitrack.rotation);
+
+        projector.Rotate(-optitrack.eulerAngles.x,optitrack.eulerAngles.y, -optitrack.eulerAngles.z);
+
+
+        projector.Rotate(rotateOffset.x, -rotateOffset.y, rotateOffset.z);
     }
 }
