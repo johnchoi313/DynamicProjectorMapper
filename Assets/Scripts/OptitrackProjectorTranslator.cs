@@ -13,17 +13,24 @@ public class OptitrackProjectorTranslator : MonoBehaviour
     public Transform optitrack;
     public Transform reference;
 
+    public Transform projectorPlane;
+    public Transform referencePlane;
+
     public TrilinearInterpolator trinterp;
 
     public Vector3 projectorPos; //Diagnostic only
     public Vector3 optitrackPos; //Diagnostic only
     public Vector3 rotateOffset;
 
+    public bool flipRotX = false;
+    public bool flipRotY = false;
+    public bool flipRotZ = false;
+
     // Start is called before the first frame update
     void Start()
     {
-        projector.localScale = new Vector3(projectorWidth, projectorHeight, 0.01f);
-        reference.localScale = new Vector3(projectorWidth, projectorHeight, 0.01f);
+        projectorPlane.localScale = new Vector3(projectorWidth, projectorHeight, 0.01f);
+        referencePlane.localScale = new Vector3(projectorWidth, projectorHeight, 0.01f);
     }
 
     // Update is called once per frame
@@ -34,28 +41,28 @@ public class OptitrackProjectorTranslator : MonoBehaviour
             if (Input.GetKeyDown(AlphaNum[i])) {
                 trinterp.sourceCubeCorners[i] = optitrack.position;
                 trinterp.destinationCubeCorners[i] = reference.position;
+                Debug.Log("Calibrated corner [" + i + "].");
             }
-        }
-
-        if(Input.GetKeyDown(KeyCode.Y)) //Duplicate Y corners
-        {
-            trinterp.sourceCubeCorners[2] = trinterp.sourceCubeCorners[0];
-            trinterp.sourceCubeCorners[3] = trinterp.sourceCubeCorners[1];
-
-            trinterp.sourceCubeCorners[6] = trinterp.sourceCubeCorners[4];
-            trinterp.sourceCubeCorners[7] = trinterp.sourceCubeCorners[5];
-
-            trinterp.destinationCubeCorners[2] = trinterp.destinationCubeCorners[0];
-            trinterp.destinationCubeCorners[3] = trinterp.destinationCubeCorners[1];
-
-            trinterp.destinationCubeCorners[6] = trinterp.destinationCubeCorners[4];
-            trinterp.destinationCubeCorners[7] = trinterp.destinationCubeCorners[5];
         }
 
         if(Input.GetKeyDown(KeyCode.R)) //Get rotation offset
         {
             rotateOffset = optitrack.eulerAngles;
+            Debug.Log("Calibrated Rotation Offset.");
         }
+
+        if (Input.GetKeyDown(KeyCode.C)) //Get rotation offset
+        {
+            trinterp.ClampCubeCorners();
+            Debug.Log("Clamped source and destination cube corners.");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z)) //Get rotation offset
+        {
+            trinterp.ClampCubeCornersZ();
+            Debug.Log("Clamped source and destination cube corners with Z offset from keystone angle.");
+        }
+
 
         projector.position = trinterp.TrilinearInterpolate(optitrack.position);
 
@@ -66,9 +73,12 @@ public class OptitrackProjectorTranslator : MonoBehaviour
         projector.rotation = Quaternion.identity;
         //projector.rotation = Quaternion.Inverse(optitrack.rotation);
 
-        projector.Rotate(-optitrack.eulerAngles.x,optitrack.eulerAngles.y, -optitrack.eulerAngles.z);
+        projector.Rotate(-optitrack.eulerAngles.x * (flipRotX ? 1 : -1), 
+                         -optitrack.eulerAngles.y * (flipRotY ? 1 : -1), 
+                         -optitrack.eulerAngles.z * (flipRotZ ? 1 : -1));
 
-
-        projector.Rotate(rotateOffset.x, -rotateOffset.y, rotateOffset.z);
+        projector.Rotate(rotateOffset.x * (flipRotX ? 1 : -1), 
+                         rotateOffset.y * (flipRotY ? 1 : -1), 
+                         rotateOffset.z * (flipRotZ ? 1 : -1));
     }
 }

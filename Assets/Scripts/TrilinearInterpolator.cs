@@ -10,6 +10,17 @@ public class TrilinearInterpolator : MonoBehaviour
     // Define the corners of the destination cube
     public Vector3[] destinationCubeCorners = new Vector3[8];
 
+    public float fudgeMaxX = 0;
+    public float fudgeMinX = 0;
+    public float fudgeMaxY = 0;
+    public float fudgeMinY = 0;
+    public float fudgeMaxZ = 0;
+    public float fudgeMinZ = 0;
+
+    public bool flipPosX = false;
+    public bool flipPosY = false;
+    public bool flipPosZ = false;
+
     void Start()
     {
         // Example input coordinate
@@ -30,6 +41,8 @@ public class TrilinearInterpolator : MonoBehaviour
         Vector3 factors = GetInterpolationFactors(input, GetMinCorner(sourceCubeCorners), GetMaxCorner(sourceCubeCorners));
 
         // Interpolate the result using the destination cube corners
+
+
         return InterpolateCube(destinationCubeCorners, factors);
     }
 
@@ -37,9 +50,13 @@ public class TrilinearInterpolator : MonoBehaviour
     // Get interpolation factors for a given input coordinate
     private Vector3 GetInterpolationFactors(Vector3 input, Vector3 minCorner, Vector3 maxCorner)
     {
-        float xd = 1-Mathf.InverseLerp(minCorner.x, maxCorner.x, input.x);
+        float xd = Mathf.InverseLerp(minCorner.x, maxCorner.x, input.x);
         float yd = Mathf.InverseLerp(minCorner.y, maxCorner.y, input.y);
-        float zd = 1-Mathf.InverseLerp(minCorner.z, maxCorner.z, input.z);
+        float zd = Mathf.InverseLerp(minCorner.z, maxCorner.z, input.z);
+
+        if (flipPosX) { xd = 1 - xd; }
+        if (flipPosY) { yd = 1 - yd; }
+        if (flipPosZ) { zd = 1 - zd; }
 
         return new Vector3(xd, yd, zd);
     }
@@ -47,14 +64,14 @@ public class TrilinearInterpolator : MonoBehaviour
     // Perform trilinear interpolation within a cube given interpolation factors
     private Vector3 InterpolateCube(Vector3[] cubeCorners, Vector3 factors)
     {
-        Vector3 p000 = cubeCorners[0]; //Left Lower Front
-        Vector3 p001 = cubeCorners[1]; //Left Lower Back
-        Vector3 p010 = cubeCorners[2]; //Left Upper Front
-        Vector3 p011 = cubeCorners[3]; //Left Upper Back
-        Vector3 p100 = cubeCorners[4]; //Right Lower Front
-        Vector3 p101 = cubeCorners[5]; //Right Lower Back
-        Vector3 p110 = cubeCorners[6]; //Right Upper Front
-        Vector3 p111 = cubeCorners[7]; //Right Upper Back
+        Vector3 p000 = cubeCorners[0] + new Vector3(fudgeMinX, fudgeMinY, fudgeMinZ); //Left Lower Front  (-1, -1, -1) [Alpha1]
+        Vector3 p001 = cubeCorners[1] + new Vector3(fudgeMinX, fudgeMinY, fudgeMaxZ); //Left Lower Back   (-1, -1,  1) [Alpha2]
+        Vector3 p010 = cubeCorners[2] + new Vector3(fudgeMinX, fudgeMaxY, fudgeMinZ); //Left Upper Front  (-1,  1, -1) [Alpha3]
+        Vector3 p011 = cubeCorners[3] + new Vector3(fudgeMinX, fudgeMaxY, fudgeMaxZ); //Left Upper Back   (-1,  1,  1) [Alpha4]
+        Vector3 p100 = cubeCorners[4] + new Vector3(fudgeMaxX, fudgeMinY, fudgeMinZ); //Right Lower Front ( 1, -1, -1) [Alpha5]
+        Vector3 p101 = cubeCorners[5] + new Vector3(fudgeMaxX, fudgeMinY, fudgeMaxZ); //Right Lower Back  ( 1, -1,  1) [Alpha6]
+        Vector3 p110 = cubeCorners[6] + new Vector3(fudgeMaxX, fudgeMaxY, fudgeMinZ); //Right Upper Front ( 1,  1, -1) [Alpha7]
+        Vector3 p111 = cubeCorners[7] + new Vector3(fudgeMaxX, fudgeMaxY, fudgeMaxZ); //Right Upper Back  ( 1,  1,  1) [Alpha8]
 
         // Interpolate along the x-axis
         Vector3 c00 = Vector3.Lerp(p000, p100, factors.x);
@@ -68,6 +85,49 @@ public class TrilinearInterpolator : MonoBehaviour
 
         // Interpolate along the z-axis
         return Vector3.Lerp(c0, c1, factors.z);
+    }
+    public void ClampCubeCorners() {
+        ClampCubeCorners(sourceCubeCorners);
+        ClampCubeCorners(destinationCubeCorners);
+    }
+    public void ClampCubeCornersZ() {
+        ClampCubeCorners(sourceCubeCorners);
+        ClampCubeCornersZ(destinationCubeCorners);
+    }
+
+    private void ClampCubeCornersZ(Vector3[] cubeCorners)
+    {
+        Vector3 minCorner = GetMinVector(cubeCorners);
+        Vector3 maxCorner = GetMaxVector(cubeCorners);
+
+        float z1 = Mathf.Min(cubeCorners[0].z, cubeCorners[4].z);
+        float z2 = Mathf.Max(cubeCorners[1].z, cubeCorners[5].z);
+        float z3 = Mathf.Min(cubeCorners[2].z, cubeCorners[6].z);
+        float z4 = Mathf.Max(cubeCorners[3].z, cubeCorners[7].z);
+
+        cubeCorners[0] = new Vector3(minCorner.x, minCorner.y, z1);
+        cubeCorners[1] = new Vector3(minCorner.x, minCorner.y, z2);
+        cubeCorners[2] = new Vector3(minCorner.x, maxCorner.y, z3);
+        cubeCorners[3] = new Vector3(minCorner.x, maxCorner.y, z4);
+        cubeCorners[4] = new Vector3(maxCorner.x, minCorner.y, z1);
+        cubeCorners[5] = new Vector3(maxCorner.x, minCorner.y, z2);
+        cubeCorners[6] = new Vector3(maxCorner.x, maxCorner.y, z3);
+        cubeCorners[7] = new Vector3(maxCorner.x, maxCorner.y, z4);
+    }
+
+    private void ClampCubeCorners(Vector3[] cubeCorners)
+    {
+        Vector3 minCorner = GetMinVector(cubeCorners);
+        Vector3 maxCorner = GetMaxVector(cubeCorners);
+
+        cubeCorners[0] = new Vector3(minCorner.x, minCorner.y, minCorner.z);
+        cubeCorners[1] = new Vector3(minCorner.x, minCorner.y, maxCorner.z);
+        cubeCorners[2] = new Vector3(minCorner.x, maxCorner.y, minCorner.z);
+        cubeCorners[3] = new Vector3(minCorner.x, maxCorner.y, maxCorner.z);
+        cubeCorners[4] = new Vector3(maxCorner.x, minCorner.y, minCorner.z);
+        cubeCorners[5] = new Vector3(maxCorner.x, minCorner.y, maxCorner.z);
+        cubeCorners[6] = new Vector3(maxCorner.x, maxCorner.y, minCorner.z);
+        cubeCorners[7] = new Vector3(maxCorner.x, maxCorner.y, maxCorner.z);
     }
 
     // Clamp the input coordinate to be within the bounds of the source cube
