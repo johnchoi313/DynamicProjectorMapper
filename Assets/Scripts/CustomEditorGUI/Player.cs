@@ -10,7 +10,5 @@ public class Player : MonoBehaviour
     public Transform transformSlot2;
     
     public int health = 100;
-    public string playerName = "Hero";
-
-    
+    public string playerName = "Hero";    
 }
