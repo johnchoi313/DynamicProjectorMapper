@@ -13,8 +13,21 @@ public class OptitrackProjectorTranslator : MonoBehaviour
     public Transform optitrack;
     public Transform reference;
 
+    //Corner
+    public Transform corner1; //Left Lower Front  (-1, -1, -1) [Alpha1]
+    public Transform corner2; //Left Lower Back   (-1, -1,  1) [Alpha2]
+    public Transform corner3; //Left Upper Front  (-1,  1, -1) [Alpha3]
+    public Transform corner4; //Left Upper Back   (-1,  1,  1) [Alpha4]
+    public Transform corner5; //Right Lower Front ( 1, -1, -1) [Alpha5]
+    public Transform corner6; //Right Lower Back  ( 1, -1,  1) [Alpha6]
+    public Transform corner7; //Right Upper Front ( 1,  1, -1) [Alpha7]
+    public Transform corner8; //Right Upper Back  ( 1,  1,  1) [Alpha8]
+
+
     public Transform projectorPlane;
     public Transform referencePlane;
+
+    public List<Transform> scalePlanes;
 
     public TrilinearInterpolator trinterp;
 
@@ -62,7 +75,6 @@ public class OptitrackProjectorTranslator : MonoBehaviour
             trinterp.ClampCubeCornersZ();
             Debug.Log("Clamped source and destination cube corners with Z offset from keystone angle.");
         }
-
 
         projector.position = trinterp.TrilinearInterpolate(optitrack.position);
 
