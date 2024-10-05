@@ -8,80 +8,115 @@ public class OptitrackProjectorTranslatorEditor : Editor
 {
     OptitrackProjectorTranslator opt;
     
+    public override void OnInspectorGUI() { opt = (OptitrackProjectorTranslator)target;
+        // Trilinear Interpolator
+        GUILayout.Label("TriLinear Interpolator", EditorStyles.boldLabel);
+        opt.trinterp = (TrilinearInterpolator)EditorGUILayout.ObjectField("TriLinear Interpolator",  opt.trinterp, typeof(TrilinearInterpolator), true);
+        GUILayout.Space(10);  
 
-    public override void OnInspectorGUI() {
-
-        // Get the target Player instance
-        opt = (OptitrackProjectorTranslator)target;
+        GUILayout.Label("Projector/Optitrack Link", EditorStyles.boldLabel);
+        //Show Projector and its position
+        opt.projector = (Transform)EditorGUILayout.ObjectField("Projector", opt.projector, typeof(Transform), true);
+        GUI.enabled = false;
+        opt.projectorPos = EditorGUILayout.Vector3Field("Projector Position", opt.projectorPos);
+        GUI.enabled = true;
+        //Show Optitrack and its position
+        opt.optitrack = (Transform)EditorGUILayout.ObjectField("Optitrack", opt.optitrack, typeof(Transform), true);
+        GUI.enabled = false;
+        opt.optitrackPos = EditorGUILayout.Vector3Field("Optitrack Position", opt.optitrackPos);
+        GUI.enabled = true;
+        GUILayout.Space(10); 
 
         // Add slots for Corners
         GUILayout.Label("Corners", EditorStyles.boldLabel);
-        opt.corner1 = (Transform)EditorGUILayout.ObjectField("Corner 1 [-1, -1, -1] (Left Lower Front)",  opt.corner1, typeof(Transform), true);
-        opt.corner2 = (Transform)EditorGUILayout.ObjectField("Corner 2 [-1, -1,  1] (Left Lower Back)",   opt.corner2, typeof(Transform), true);
-        opt.corner3 = (Transform)EditorGUILayout.ObjectField("Corner 3 [-1,  1, -1] (Left Upper Front)",  opt.corner3, typeof(Transform), true);
-        opt.corner4 = (Transform)EditorGUILayout.ObjectField("Corner 4 [-1,  1,  1] (Left Upper Back)",   opt.corner4, typeof(Transform), true);
-        opt.corner5 = (Transform)EditorGUILayout.ObjectField("Corner 5 [ 1, -1, -1] (Right Lower Front)", opt.corner5, typeof(Transform), true);
-        opt.corner6 = (Transform)EditorGUILayout.ObjectField("Corner 6 [ 1, -1,  1] (Right Lower Back)",  opt.corner6, typeof(Transform), true);
-        opt.corner7 = (Transform)EditorGUILayout.ObjectField("Corner 7 [ 1,  1, -1] (Right Upper Front)", opt.corner7, typeof(Transform), true);
-        opt.corner8 = (Transform)EditorGUILayout.ObjectField("Corner 8 [ 1,  1,  1] (Right Upper Back)",  opt.corner8, typeof(Transform), true);
+        opt.corner0 = (Transform)EditorGUILayout.ObjectField("Corner 0 [-1, -1, -1] (Left Lower Front)",  opt.corner0, typeof(Transform), true);
+        opt.corner1 = (Transform)EditorGUILayout.ObjectField("Corner 1 [-1, -1,  1] (Left Lower Back)",   opt.corner1, typeof(Transform), true);
+        opt.corner2 = (Transform)EditorGUILayout.ObjectField("Corner 2 [-1,  1, -1] (Left Upper Front)",  opt.corner2, typeof(Transform), true);
+        opt.corner3 = (Transform)EditorGUILayout.ObjectField("Corner 3 [-1,  1,  1] (Left Upper Back)",   opt.corner3, typeof(Transform), true);
+        opt.corner4 = (Transform)EditorGUILayout.ObjectField("Corner 4 [ 1, -1, -1] (Right Lower Front)", opt.corner4, typeof(Transform), true);
+        opt.corner5 = (Transform)EditorGUILayout.ObjectField("Corner 5 [ 1, -1,  1] (Right Lower Back)",  opt.corner5, typeof(Transform), true);
+        opt.corner6 = (Transform)EditorGUILayout.ObjectField("Corner 6 [ 1,  1, -1] (Right Upper Front)", opt.corner6, typeof(Transform), true);
+        opt.corner7 = (Transform)EditorGUILayout.ObjectField("Corner 7 [ 1,  1,  1] (Right Upper Back)",  opt.corner7, typeof(Transform), true);
         GUILayout.Space(10);  // Add spacing after the section
 
-        //
+        //Rotation Offsets
+        GUILayout.Label("Rotation Offset", EditorStyles.boldLabel);
+        GUILayout.BeginHorizontal();
+        opt.rotateOffset = EditorGUILayout.Vector3Field("Rotate Offset", opt.rotateOffset);
+        if (GUILayout.Button("Set Optitrack Offset")) { opt.SetRotationOffset(); }
+        if (GUILayout.Button("Reset")) { opt.ResetRotationOffset(); }
+        GUILayout.EndHorizontal();
+        GUILayout.Space(10); 
+
+        //Rotation Offset Flips
+        GUILayout.Label("Flip Options", EditorStyles.boldLabel);
+        opt.flipRotX = EditorGUILayout.Toggle("Flip Rot X", opt.flipRotX);
+        opt.flipRotY = EditorGUILayout.Toggle("Flip Rot Y", opt.flipRotY);
+        opt.flipRotZ = EditorGUILayout.Toggle("Flip Rot Z", opt.flipRotZ);
+        GUILayout.Space(10);  // Add spacing after the section
+
+        CalibrateCornerButtons();
+
+        //Clamp Corner Calibration Quick Helpers
+        GUILayout.Label("Clamp Corner Calibration", EditorStyles.boldLabel);
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Clamp Cube Corners")) { opt.ClampCubeCorners(); }
+        if (GUILayout.Button("Clamp Cube Corners Z")) { opt.ClampCubeCornersZ(); }
+        GUILayout.EndHorizontal();
+        GUILayout.Space(10);  // Add spacing after the section
+
+        //Save/Load Calibrations
+        GUILayout.Label("Save/Load Calibration", EditorStyles.boldLabel);
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Save Cube Calibration")) { opt.ClampCubeCorners(); }
+        if (GUILayout.Button("Load Cube Calibration")) { opt.ClampCubeCornersZ(); }
+        GUILayout.EndHorizontal();
+        GUILayout.Space(10);  // Add spacing after the section
+    }
+
+    public void CalibrateCornerButtons() {
+        //Front rows
+        GUILayout.Label("Calibrate Front Corners", EditorStyles.boldLabel);
 
         // First row of buttons (top corners of the cube)
         GUILayout.BeginHorizontal();
-        GUI.backgroundColor = Color.red;  // Color for Corner 1
-        if (GUILayout.Button("Corner 3")) {
-            Debug.Log("Corner 3 clicked");
-        }
-
-        GUI.backgroundColor = Color.yellow;  // Color for Corner 2
-        if (GUILayout.Button("Corner 7")) {
-            Debug.Log("Corner 7 clicked");
-        }
+        GUI.backgroundColor = Color.red;
+        if (GUILayout.Button("Corner 2")) { opt.CalibrateCorner(2); }
+        GUI.backgroundColor = Color.yellow;
+        if (GUILayout.Button("Corner 6")) { opt.CalibrateCorner(6); }
         GUILayout.EndHorizontal();
 
         // Second row of buttons (middle level - represent space between top and bottom)
         GUILayout.BeginHorizontal();
-        GUI.backgroundColor = Color.green;  // Color for Corner 3
-        if (GUILayout.Button("Corner 1")) {
-            Debug.Log("Corner 1 clicked");
-        }
-
-        GUI.backgroundColor = Color.blue;  // Color for Corner 4
-        if (GUILayout.Button("Corner 5")) {
-            Debug.Log("Corner 5 clicked");
-        }
+        GUI.backgroundColor = Color.green;
+        if (GUILayout.Button("Corner 0")) { opt.CalibrateCorner(0); }
+        GUI.backgroundColor = Color.blue; 
+        if (GUILayout.Button("Corner 4")) { opt.CalibrateCorner(4); }
         GUILayout.EndHorizontal();
+        GUILayout.Space(10);  
+
+        //Back rows
+        GUILayout.Label("Calibrate Back Corners", EditorStyles.boldLabel);
 
         // Third row of buttons (bottom corners of the cube)
         GUILayout.BeginHorizontal();
         GUI.backgroundColor = Color.magenta;  // Color for Corner 5
-        if (GUILayout.Button("Corner 4")) {
-            Debug.Log("Corner 4 clicked");
-        }
-
+        if (GUILayout.Button("Corner 3")) { opt.CalibrateCorner(3); }
         GUI.backgroundColor = Color.cyan;  // Color for Corner 6
-        if (GUILayout.Button("Corner 8")) {
-            Debug.Log("Corner 8 clicked");
-        }
+        if (GUILayout.Button("Corner 7")) { opt.CalibrateCorner(7); }
         GUILayout.EndHorizontal();
 
         // Fourth row of buttons (final bottom corners of the cube)
         GUILayout.BeginHorizontal();
         GUI.backgroundColor = Color.grey;  // Color for Corner 7
-        if (GUILayout.Button("Corner 2")) {
-            Debug.Log("Corner 2 clicked");
-        }
-
+        if (GUILayout.Button("Corner 1")) { opt.CalibrateCorner(1); }
         GUI.backgroundColor = Color.white;  // Color for Corner 8
-        if (GUILayout.Button("Corner 6")) {
-            Debug.Log("Corner 6 clicked");
-        }
+        if (GUILayout.Button("Corner 5")) { opt.CalibrateCorner(5); }
         GUILayout.EndHorizontal();
 
         // Reset the GUI background color to default
         GUI.backgroundColor = Color.white;
+        GUILayout.Space(10);  
     }
 
 }

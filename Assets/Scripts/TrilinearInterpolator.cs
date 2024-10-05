@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class TrilinearInterpolator : MonoBehaviour
 {
-    // Define the corners of the source cube
-    public Vector3[] sourceCubeCorners = new Vector3[8];
+    [Header("Flip Positions")]
+    public bool flipPosX = false;
+    public bool flipPosY = false;
+    public bool flipPosZ = false;
 
-    // Define the corners of the destination cube
-    public Vector3[] destinationCubeCorners = new Vector3[8];
-
+    [Header("Fudge Factor Quick Adjusters")]
     public float fudgeMaxX = 0;
     public float fudgeMinX = 0;
     public float fudgeMaxY = 0;
@@ -17,9 +17,12 @@ public class TrilinearInterpolator : MonoBehaviour
     public float fudgeMaxZ = 0;
     public float fudgeMinZ = 0;
 
-    public bool flipPosX = false;
-    public bool flipPosY = false;
-    public bool flipPosZ = false;
+    [Header("Source/Destination Cube Calibrations")]
+    // Define the corners of the source cube
+    public Vector3[] sourceCubeCorners = new Vector3[8];
+    // Define the corners of the destination cube
+    public Vector3[] destinationCubeCorners = new Vector3[8];
+
 
     void Start()
     {

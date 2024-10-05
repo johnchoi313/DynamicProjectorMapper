@@ -70,8 +70,6 @@ public class PlayerEditor : Editor
 
         // End the horizontal layout
         GUILayout.EndHorizontal();  
-
-
         GUILayout.Space(10);  // Add spacing after the section
 
         // Default Vector3 slot

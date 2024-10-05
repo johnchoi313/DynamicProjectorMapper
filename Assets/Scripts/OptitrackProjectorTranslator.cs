@@ -4,91 +4,77 @@ using UnityEngine;
 
 public class OptitrackProjectorTranslator : MonoBehaviour
 {
-    public float projectorWidth;
-    public float projectorHeight;
-
-    public KeyCode[] AlphaNum = new KeyCode[8];
-
-    public Transform projector;
-    public Transform optitrack;
-    public Transform reference;
-
-    //Corner
-    public Transform corner1; //Left Lower Front  (-1, -1, -1) [Alpha1]
-    public Transform corner2; //Left Lower Back   (-1, -1,  1) [Alpha2]
-    public Transform corner3; //Left Upper Front  (-1,  1, -1) [Alpha3]
-    public Transform corner4; //Left Upper Back   (-1,  1,  1) [Alpha4]
-    public Transform corner5; //Right Lower Front ( 1, -1, -1) [Alpha5]
-    public Transform corner6; //Right Lower Back  ( 1, -1,  1) [Alpha6]
-    public Transform corner7; //Right Upper Front ( 1,  1, -1) [Alpha7]
-    public Transform corner8; //Right Upper Back  ( 1,  1,  1) [Alpha8]
-
-
-    public Transform projectorPlane;
-    public Transform referencePlane;
-
-    public List<Transform> scalePlanes;
 
     public TrilinearInterpolator trinterp;
 
+    public Transform projector;
     public Vector3 projectorPos; //Diagnostic only
+    public Transform optitrack;
     public Vector3 optitrackPos; //Diagnostic only
+
+    //Calibration Corners
+    public Transform corner0; //Left Lower Front  (-1, -1, -1) [Alpha1]
+    public Transform corner1; //Left Lower Back   (-1, -1,  1) [Alpha2]
+    public Transform corner2; //Left Upper Front  (-1,  1, -1) [Alpha3]
+    public Transform corner3; //Left Upper Back   (-1,  1,  1) [Alpha4]
+    public Transform corner4; //Right Lower Front ( 1, -1, -1) [Alpha5]
+    public Transform corner5; //Right Lower Back  ( 1, -1,  1) [Alpha6]
+    public Transform corner6; //Right Upper Front ( 1,  1, -1) [Alpha7]
+    public Transform corner7; //Right Upper Back  ( 1,  1,  1) [Alpha8]
+
     public Vector3 rotateOffset;
 
     public bool flipRotX = false;
     public bool flipRotY = false;
     public bool flipRotZ = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        projectorPlane.localScale = new Vector3(projectorWidth, projectorHeight, 0.01f);
-        referencePlane.localScale = new Vector3(projectorWidth, projectorHeight, 0.01f);
+    //Calibrate Corner
+    public void CalibrateCorner(int corner) {
+        trinterp.sourceCubeCorners[corner] = optitrack.position;
+        switch(corner) {
+            case 0: trinterp.destinationCubeCorners[0] = corner0.position; break;
+            case 1: trinterp.destinationCubeCorners[1] = corner1.position; break;
+            case 2: trinterp.destinationCubeCorners[2] = corner2.position; break;
+            case 3: trinterp.destinationCubeCorners[3] = corner3.position; break;
+            case 4: trinterp.destinationCubeCorners[4] = corner4.position; break;
+            case 5: trinterp.destinationCubeCorners[5] = corner5.position; break;
+            case 6: trinterp.destinationCubeCorners[6] = corner6.position; break;
+            case 7: trinterp.destinationCubeCorners[7] = corner7.position; break;
+        }
+        Debug.Log("Calibrated corner [" + corner + "].");
+    }
+    //Rotation Helper Functions
+    public void SetRotationOffset() { 
+        rotateOffset = optitrack.eulerAngles; 
+        Debug.Log("Calibrated Rotation Offset.");
+    }
+    public void ResetRotationOffset() { 
+        rotateOffset = new Vector3(0,0,0); 
+        Debug.Log("Reset Rotation Offset.");
+    }
+    //Quick Calibration Clamping Helper Functions
+    public void ClampCubeCorners() {
+        trinterp.ClampCubeCorners();
+        Debug.Log("Clamped source and destination cube corners.");
+    }
+    public void ClampCubeCornersZ() {
+        trinterp.ClampCubeCornersZ();
+        Debug.Log("Clamped source and destination cube corners with Z offset from keystone angle.");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //Calibration keys Alpha1 to Alpha 8: Calibration Order Matters!
-        for (int i = 0; i< 8; i++) {
-            if (Input.GetKeyDown(AlphaNum[i])) {
-                trinterp.sourceCubeCorners[i] = optitrack.position;
-                trinterp.destinationCubeCorners[i] = reference.position;
-                Debug.Log("Calibrated corner [" + i + "].");
-            }
-        }
-
-        if(Input.GetKeyDown(KeyCode.R)) //Get rotation offset
-        {
-            rotateOffset = optitrack.eulerAngles;
-            Debug.Log("Calibrated Rotation Offset.");
-        }
-
-        if (Input.GetKeyDown(KeyCode.C)) //Get rotation offset
-        {
-            trinterp.ClampCubeCorners();
-            Debug.Log("Clamped source and destination cube corners.");
-        }
-
-        if (Input.GetKeyDown(KeyCode.Z)) //Get rotation offset
-        {
-            trinterp.ClampCubeCornersZ();
-            Debug.Log("Clamped source and destination cube corners with Z offset from keystone angle.");
-        }
-
+    void Update() {
+        //Map Projector Position to Optitrack
         projector.position = trinterp.TrilinearInterpolate(optitrack.position);
-
+        //Update Diagnostic Vectors
         projectorPos = projector.position;
         optitrackPos = optitrack.position;
-
-
+        //Reset Rotation
         projector.rotation = Quaternion.identity;
-        //projector.rotation = Quaternion.Inverse(optitrack.rotation);
-
+        //Map Projector Rotation to Optitrack with flips
         projector.Rotate(-optitrack.eulerAngles.x * (flipRotX ? 1 : -1), 
                          -optitrack.eulerAngles.y * (flipRotY ? 1 : -1), 
                          -optitrack.eulerAngles.z * (flipRotZ ? 1 : -1));
-
+        //Account for offsets with flips
         projector.Rotate(rotateOffset.x * (flipRotX ? 1 : -1), 
                          rotateOffset.y * (flipRotY ? 1 : -1), 
                          rotateOffset.z * (flipRotZ ? 1 : -1));
