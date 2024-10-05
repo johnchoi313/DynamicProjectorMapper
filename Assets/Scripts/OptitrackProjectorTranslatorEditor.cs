@@ -65,13 +65,6 @@ public class OptitrackProjectorTranslatorEditor : Editor
         GUILayout.EndHorizontal();
         GUILayout.Space(10);  // Add spacing after the section
 
-        //Save/Load Calibrations
-        GUILayout.Label("Save/Load Calibration", EditorStyles.boldLabel);
-        GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Save Cube Calibration")) { opt.ClampCubeCorners(); }
-        if (GUILayout.Button("Load Cube Calibration")) { opt.ClampCubeCornersZ(); }
-        GUILayout.EndHorizontal();
-        GUILayout.Space(10);  // Add spacing after the section
     }
 
     public void CalibrateCornerButtons() {
@@ -100,17 +93,17 @@ public class OptitrackProjectorTranslatorEditor : Editor
 
         // Third row of buttons (bottom corners of the cube)
         GUILayout.BeginHorizontal();
-        GUI.backgroundColor = Color.magenta;  // Color for Corner 5
+        GUI.backgroundColor = Color.magenta;  
         if (GUILayout.Button("Corner 3")) { opt.CalibrateCorner(3); }
-        GUI.backgroundColor = Color.cyan;  // Color for Corner 6
+        GUI.backgroundColor = Color.cyan;  
         if (GUILayout.Button("Corner 7")) { opt.CalibrateCorner(7); }
         GUILayout.EndHorizontal();
 
         // Fourth row of buttons (final bottom corners of the cube)
         GUILayout.BeginHorizontal();
-        GUI.backgroundColor = Color.grey;  // Color for Corner 7
+        GUI.backgroundColor = Color.grey;  
         if (GUILayout.Button("Corner 1")) { opt.CalibrateCorner(1); }
-        GUI.backgroundColor = Color.white;  // Color for Corner 8
+        GUI.backgroundColor = Color.white;  
         if (GUILayout.Button("Corner 5")) { opt.CalibrateCorner(5); }
         GUILayout.EndHorizontal();
 

@@ -160,10 +160,5 @@ public class ProjectorSizeEditor : Editor
         }
         GUILayout.Space(10);  // Add psacing after the section
 
-
-        
-
-
     }
-
 }
