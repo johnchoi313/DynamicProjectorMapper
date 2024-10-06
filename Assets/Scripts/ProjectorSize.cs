@@ -34,6 +34,14 @@ public class ProjectorSize : MonoBehaviour
         Debug.Log("Planes scaled.");
     }
 
+    public void UpdateCamera() {
+        camera.fieldOfView = cameraFOV;
+    }
+
+    public void UpdateBackgroundScale() {
+        backgroundPlane.localPosition = new Vector3(0,0,cameraDistanceToBackground);
+        backgroundPlane.localScale = new Vector3(backgroundWidth, backgroundHeight, 1f);
+    }
 
     public void HideCalibration() {
         foreach(Transform cornerPlane in cornerPlanes) {

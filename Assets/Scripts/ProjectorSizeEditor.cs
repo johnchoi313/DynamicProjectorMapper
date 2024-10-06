@@ -4,17 +4,14 @@ using UnityEngine;
 using UnityEditor;
 
 
+
+
 [CustomEditor(typeof(ProjectorSize))]
 public class ProjectorSizeEditor : Editor
 {
     ProjectorSize ps;
 
-    // Start is called before the first frame update
-    public override void OnInspectorGUI() {
-
-        // Get the target Player instance
-        ps = (ProjectorSize)target;
-
+    private void ProjectorElements() {
         // Length field (Linked meters and feet)
         GUILayout.Label("Projector Width and Height (Meters and Feet)", EditorStyles.boldLabel);
         ps.projectorPlane = (Transform)EditorGUILayout.ObjectField("Projector Plane ",  ps.projectorPlane, typeof(Transform), true);
@@ -35,7 +32,6 @@ public class ProjectorSizeEditor : Editor
             ps.projectorWidth = ps.projectorWidthIn / 39.3701f; 
             ps.UpdatePlaneScale();
         }
-        // End the horizontal layout
         GUILayout.EndHorizontal();  
 
         GUILayout.BeginHorizontal(); 
@@ -53,15 +49,13 @@ public class ProjectorSizeEditor : Editor
             ps.projectorHeight = ps.projectorHeightIn / 39.3701f; 
             ps.UpdatePlaneScale();
         }
-        // End the horizontal layout
         GUILayout.EndHorizontal();  
 
-
-        GUILayout.Space(10);  // Add psacing after the section
-
-
+        GUILayout.Space(10); 
+    }
 
 
+    private void BackgroundElements() {
         // Length field (Linked meters and feet)
         GUILayout.Label("Background Width and Height (Meters and Feet)", EditorStyles.boldLabel);
         ps.backgroundPlane = (Transform)EditorGUILayout.ObjectField("Background Plane ",  ps.backgroundPlane, typeof(Transform), true);
@@ -72,14 +66,14 @@ public class ProjectorSizeEditor : Editor
         ps.backgroundWidth = EditorGUILayout.FloatField("Background Width (m)", ps.backgroundWidth);
         if (EditorGUI.EndChangeCheck()) { 
             ps.backgroundWidthIn = ps.backgroundWidth * 39.3701f; 
-            ps.UpdatePlaneScale();
+            ps.UpdateBackgroundScale();
         }
         // Feet field
         EditorGUI.BeginChangeCheck();  // Start tracking changes to the feet field
         ps.backgroundWidthIn = EditorGUILayout.FloatField("Background Width (in)", ps.backgroundWidthIn);
         if (EditorGUI.EndChangeCheck()) { 
             ps.backgroundWidth = ps.backgroundWidthIn / 39.3701f; 
-            ps.UpdatePlaneScale();
+            ps.UpdateBackgroundScale();
         }
         // End the horizontal layout
         GUILayout.EndHorizontal();  
@@ -90,40 +84,68 @@ public class ProjectorSizeEditor : Editor
         ps.backgroundHeight = EditorGUILayout.FloatField("Background Height (m)", ps.backgroundHeight);
         if (EditorGUI.EndChangeCheck()) { 
             ps.backgroundHeightIn = ps.backgroundHeight * 39.3701f; 
-            ps.UpdatePlaneScale();
+            ps.UpdateBackgroundScale();
         }
         // Feet field
         EditorGUI.BeginChangeCheck();  // Start tracking changes to the feet field
         ps.backgroundHeightIn = EditorGUILayout.FloatField("Background Height (in)", ps.backgroundHeightIn);
         if (EditorGUI.EndChangeCheck()) { 
             ps.backgroundHeight = ps.backgroundHeightIn / 39.3701f; 
-            ps.UpdatePlaneScale();
+            ps.UpdateBackgroundScale();
         }
         // End the horizontal layout
         GUILayout.EndHorizontal();  
         GUILayout.Space(10);  // Add psacing after the section
+    }
 
+    // Start is called before the first frame update
+    public override void OnInspectorGUI() {
+
+        // Get the target Player instance
+        ps = (ProjectorSize)target;
+
+        ProjectorElements();
+
+        BackgroundElements();
+
+        CameraElements();
+
+        CornerElements();
+
+
+    }
+
+
+    private void CameraElements() {
 
         //Camera settings
         GUILayout.Label("Camera Settings", EditorStyles.boldLabel);
 
         ps.camera = (Camera)EditorGUILayout.ObjectField("Camera",  ps.camera, typeof(Camera), true);
         
+        ps.cameraDistanceToBackground = EditorGUILayout.FloatField("Camera Distance to Background (m)", ps.cameraDistanceToBackground);
+        if (EditorGUI.EndChangeCheck()) { ps.UpdateBackgroundScale(); }
+
         GUILayout.BeginHorizontal(); 
         
-        ps.cameraDistanceToBackground = EditorGUILayout.FloatField("Camera Distance to Background (m)", ps.cameraDistanceToBackground);
         ps.cameraFOV = EditorGUILayout.FloatField("Camera FOV (degrees)", ps.cameraFOV);
+        if (EditorGUI.EndChangeCheck()) { ps.UpdateCamera(); }
+
+        
+        if (GUILayout.Button("Calculate Camera FOV")) { 
+            ps.cameraFOV = Mathf.Atan((ps.backgroundWidth*0.5f) / ps.cameraDistanceToBackground) * 57.2958f;
+            ps.UpdateBackgroundScale();
+            ps.UpdateCamera();
+        }
         
 
         GUILayout.EndHorizontal();  
         
-
-
-
         GUILayout.Space(10);  // Add psacing after the section
+    }
 
-
-
+    private void CornerElements() {
+        
 
         // First row of buttons (top corners of the cube)
         GUILayout.Label("Calibrate Back Corners", EditorStyles.boldLabel);
@@ -135,8 +157,6 @@ public class ProjectorSizeEditor : Editor
         GUILayout.EndHorizontal();
         GUILayout.Space(10);  // Add psacing after the section
 
-
-            
 
         // List of Vector3s
         GUILayout.Label("List of Corner Planes", EditorStyles.boldLabel);
@@ -161,4 +181,5 @@ public class ProjectorSizeEditor : Editor
         GUILayout.Space(10);  // Add psacing after the section
 
     }
+
 }

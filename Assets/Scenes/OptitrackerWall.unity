@@ -3392,12 +3392,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1653955836}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 5.083}
   m_LocalScale: {x: 4.4402504, y: 2.497641, z: 0.92045}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1670549213}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1654648806
 GameObject:
@@ -3487,9 +3487,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2031885096}
   - {fileID: 852427536}
   - {fileID: 1111086687}
   - {fileID: 1437143717}
+  - {fileID: 1653955840}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1670549214
@@ -3592,7 +3594,7 @@ MonoBehaviour:
   backgroundHeight: 2.497641
   backgroundWidthIn: 174.81308
   backgroundHeightIn: 98.332375
-  camera: {fileID: 0}
+  camera: {fileID: 2031885095}
   cameraDistanceToBackground: 0
   cameraFOV: 0
 --- !u!114 &1670549217
@@ -4247,7 +4249,7 @@ GameObject:
   - component: {fileID: 2031885096}
   - component: {fileID: 2031885095}
   m_Layer: 6
-  m_Name: ProjectorCamera1
+  m_Name: ProjectorCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4312,12 +4314,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2031885094}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1670549213}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2058026900
 GameObject:
@@ -4505,9 +4507,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 571670653}
-  - {fileID: 2031885096}
   - {fileID: 1670549213}
-  - {fileID: 1653955840}
   - {fileID: 1654648807}
   - {fileID: 4084198}
   - {fileID: 963194228}
