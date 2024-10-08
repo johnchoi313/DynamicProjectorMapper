@@ -10,7 +10,7 @@ public class OptitrackProjectorTranslator : MonoBehaviour
     //Projector Stuff
     public Transform projector;
     public Vector3 projectorPos; //Diagnostic only
-    
+
     //Optitrack Stuff
     public Transform optitrack;
     public Vector3 optitrackPos; //Diagnostic only
@@ -36,7 +36,7 @@ public class OptitrackProjectorTranslator : MonoBehaviour
     //Calibrate Corner
     public void CalibrateCorner(int corner) {
         trinterp.sourceCubeCorners[corner] = optitrack.position;
-        switch(corner) {
+        switch (corner) {
             case 0: trinterp.destinationCubeCorners[0] = corner0.position; break;
             case 1: trinterp.destinationCubeCorners[1] = corner1.position; break;
             case 2: trinterp.destinationCubeCorners[2] = corner2.position; break;
@@ -48,6 +48,19 @@ public class OptitrackProjectorTranslator : MonoBehaviour
         }
         Debug.Log("Calibrated corner [" + corner + "].");
     }
+    public void ApplyCornerTransforms() {
+        corner0.position = trinterp.destinationCubeCorners[0];
+        corner1.position = trinterp.destinationCubeCorners[1];
+        corner2.position = trinterp.destinationCubeCorners[2];
+        corner3.position = trinterp.destinationCubeCorners[3];
+        corner4.position = trinterp.destinationCubeCorners[4];
+        corner5.position = trinterp.destinationCubeCorners[5];
+        corner6.position = trinterp.destinationCubeCorners[6];
+        corner7.position = trinterp.destinationCubeCorners[7];
+    
+        Debug.Log("Loaded corner transforms.");
+    }
+
     //Rotation Helper Functions
     public void SetRotationOffset() { 
         rotateOffset = optitrack.eulerAngles; 
@@ -60,10 +73,12 @@ public class OptitrackProjectorTranslator : MonoBehaviour
     //Quick Calibration Clamping Helper Functions
     public void ClampCubeCorners() {
         trinterp.ClampCubeCorners();
+        ApplyCornerTransforms();
         Debug.Log("Clamped source and destination cube corners.");
     }
     public void ClampCubeCornersZ() {
         trinterp.ClampCubeCornersZ();
+        ApplyCornerTransforms();
         Debug.Log("Clamped source and destination cube corners with Z offset from keystone angle.");
     }
 

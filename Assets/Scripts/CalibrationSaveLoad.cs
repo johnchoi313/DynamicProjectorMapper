@@ -123,6 +123,12 @@ public class CalibrationSaveLoad : MonoBehaviour
         opt.flipRotX = calibration.flipRotX;
         opt.flipRotY = calibration.flipRotY;
         opt.flipRotZ = calibration.flipRotZ;
+
+        //Apply functions
+        ps.UpdatePlaneScale();
+        ps.UpdateCamera();
+        ps.UpdateBackgroundScale();
+        opt.ApplyCornerTransforms();
     }
 }
 

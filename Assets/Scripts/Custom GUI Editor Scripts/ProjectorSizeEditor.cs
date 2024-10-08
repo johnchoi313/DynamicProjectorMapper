@@ -23,7 +23,8 @@ public class ProjectorSizeEditor : Editor
         GUILayout.Label("Projector Width and Height (Meters and Feet)", EditorStyles.boldLabel);
         ps.projectorPlane = (Transform)EditorGUILayout.ObjectField("Projector Plane ",  ps.projectorPlane, typeof(Transform), true);
         ps.projectorScaleFactor = EditorGUILayout.FloatField("Projector Scale Factor", ps.projectorScaleFactor);
-        
+        if (EditorGUI.EndChangeCheck()) { ps.UpdatePlaneScale(); }
+
         GUILayout.BeginHorizontal(); 
         // Meters field
         EditorGUI.BeginChangeCheck();  // Start tracking changes to the meters field
