@@ -56,7 +56,24 @@ public class ProjectorSizeEditor : Editor
             ps.projectorHeight = ps.projectorHeightIn / 39.3701f; 
             ps.UpdatePlaneScale();
         }
-        GUILayout.EndHorizontal();  
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        // Meters field
+        EditorGUI.BeginChangeCheck();  // Start tracking changes to the meters field
+        ps.projectorDepth = EditorGUILayout.FloatField("Projector Depth (m)", ps.projectorDepth);
+        if (EditorGUI.EndChangeCheck()) {
+            ps.projectorHeightIn = ps.projectorHeight * 39.3701f;
+            ps.UpdatePlaneScale();
+        }
+        // Feet field
+        EditorGUI.BeginChangeCheck();  // Start tracking changes to the feet field
+        ps.projectorDepthIn = EditorGUILayout.FloatField("Projector Depth (in)", ps.projectorDepthIn);
+        if (EditorGUI.EndChangeCheck()) {
+            ps.projectorDepth = ps.projectorDepthIn / 39.3701f;
+            ps.UpdatePlaneScale();
+        }
+        GUILayout.EndHorizontal();
 
         GUILayout.Space(10); 
     }

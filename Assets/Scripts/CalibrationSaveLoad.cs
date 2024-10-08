@@ -39,8 +39,10 @@ public class CalibrationSaveLoad : MonoBehaviour
         //Projector Size Stuff
         calibration.projectorWidth = ps.projectorWidth;
         calibration.projectorHeight = ps.projectorHeight;
-        calibration.backgroundWidthIn = ps.backgroundWidthIn;
-        calibration.backgroundHeightIn = ps.backgroundHeightIn;
+        calibration.projectorDepth = ps.projectorDepth;
+        calibration.projectorWidthIn = ps.projectorWidthIn;
+        calibration.projectorHeightIn = ps.projectorHeightIn;
+        calibration.projectorDepthIn = ps.projectorDepthIn;
         calibration.projectorScaleFactor = ps.projectorScaleFactor;
 
         calibration.backgroundWidth = ps.backgroundWidth;
@@ -86,8 +88,10 @@ public class CalibrationSaveLoad : MonoBehaviour
         //Projector Size Stuff
         ps.projectorWidth = calibration.projectorWidth;
         ps.projectorHeight = calibration.projectorHeight;
-        ps.backgroundWidthIn = calibration.backgroundWidthIn;
-        ps.backgroundHeightIn = calibration.backgroundHeightIn;
+        ps.projectorDepth = calibration.projectorDepth;
+        ps.projectorWidthIn = calibration.projectorWidthIn;
+        ps.projectorHeightIn = calibration.projectorHeightIn;
+        ps.projectorDepthIn = calibration.projectorDepthIn;
         ps.projectorScaleFactor = calibration.projectorScaleFactor;
 
         ps.backgroundWidth = calibration.backgroundWidth;
@@ -125,10 +129,12 @@ public class CalibrationSaveLoad : MonoBehaviour
 [System.Serializable]
 public class CalibrationData {
     //Projector Size Stuff
-    public float projectorWidth = 0.355f; 
+    public float projectorWidth = 0.355f;
     public float projectorHeight = 0.28f;
+    public float projectorDepth = 0.01f;
     public float projectorWidthIn = 14f;
     public float projectorHeightIn = 11f;
+    public float projectorDepthIn = 0.39f;
     public float projectorScaleFactor = 1f;
 
     public float backgroundWidth = 4.44f;
