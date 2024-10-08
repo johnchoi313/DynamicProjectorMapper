@@ -4,13 +4,20 @@ using UnityEngine;
 using UnityEditor;
 
 
-
-
 [CustomEditor(typeof(ProjectorSize))]
 public class ProjectorSizeEditor : Editor
 {
     ProjectorSize ps;
 
+    // Start is called before the first frame update
+    public override void OnInspectorGUI() {
+        ps = (ProjectorSize)target;
+
+        ProjectorElements();
+        BackgroundElements();
+        CameraElements();
+        CornerElements();
+    }
     private void ProjectorElements() {
         // Length field (Linked meters and feet)
         GUILayout.Label("Projector Width and Height (Meters and Feet)", EditorStyles.boldLabel);
@@ -97,25 +104,6 @@ public class ProjectorSizeEditor : Editor
         GUILayout.EndHorizontal();  
         GUILayout.Space(10);  // Add psacing after the section
     }
-
-    // Start is called before the first frame update
-    public override void OnInspectorGUI() {
-
-        // Get the target Player instance
-        ps = (ProjectorSize)target;
-
-        ProjectorElements();
-
-        BackgroundElements();
-
-        CameraElements();
-
-        CornerElements();
-
-
-    }
-
-
     private void CameraElements() {
 
         //Camera settings
@@ -155,28 +143,24 @@ public class ProjectorSizeEditor : Editor
         GUI.backgroundColor = Color.yellow;
         if (GUILayout.Button("Show Calibration")) { ps.ShowCalibration(); }
         GUILayout.EndHorizontal();
-        GUILayout.Space(10);  // Add psacing after the section
+        GUILayout.Space(10);  
 
-
-        // List of Vector3s
+        //Corner Planes List
         GUILayout.Label("List of Corner Planes", EditorStyles.boldLabel);
 
-        // Dipslay each Vector3 in the list with a field and remove button
+        // Display each Vector3 in the list with a field and remove button
         for (int i = 0; i < ps.cornerPlanes.Count; i++) {
             GUILayout.BeginHorizontal();
-            
             ps.cornerPlanes[i] = (Transform)EditorGUILayout.ObjectField("Corner Plane " + i,  ps.cornerPlanes[i], typeof(Transform), true);
-             
             if (GUILayout.Button("Remove", GUILayout.Width(70))) {
                 ps.cornerPlanes.RemoveAt(i);
                 break;  // To avoid modifying the list while iterating
             }
             GUILayout.EndHorizontal();
         }
-
-        // Button to add a new Vector3 to the list
+        // Button to add a new default null cornerPlane to the list     
         if (GUILayout.Button("Add New Corner Plane Object")) {
-            ps.cornerPlanes.Add(null);  // Add a default zero Vector3
+            ps.cornerPlanes.Add(null);  
         }
         GUILayout.Space(10);  // Add psacing after the section
 

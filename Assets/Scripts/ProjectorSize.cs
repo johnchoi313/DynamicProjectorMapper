@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class ProjectorSize : MonoBehaviour
 {
+
+
     public float projectorWidth; //In Meters
     public float projectorHeight; //In Meters
     public float projectorWidthIn = 1f;
@@ -11,15 +14,14 @@ public class ProjectorSize : MonoBehaviour
 
     public float projectorScaleFactor = 1.0f;
 
-    // List of Vector3s
-    public List<Transform> cornerPlanes;
-    public Transform projectorPlane;
-    public Transform backgroundPlane;
-    
     public float backgroundWidth;
     public float backgroundHeight;
     public float backgroundWidthIn;
     public float backgroundHeightIn;
+
+    public Transform projectorPlane;
+    public Transform backgroundPlane;
+    public List<Transform> cornerPlanes;
     
     public Camera camera;
     public float cameraDistanceToBackground;
@@ -59,5 +61,4 @@ public class ProjectorSize : MonoBehaviour
         Debug.Log("All calibration objects shown.");
     }
     
-
 }
