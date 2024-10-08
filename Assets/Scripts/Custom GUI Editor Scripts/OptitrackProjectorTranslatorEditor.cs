@@ -8,7 +8,17 @@ public class OptitrackProjectorTranslatorEditor : Editor
 {
     OptitrackProjectorTranslator opt;
     
-    public override void OnInspectorGUI() { opt = (OptitrackProjectorTranslator)target;
+    public override void OnInspectorGUI() { 
+        opt = (OptitrackProjectorTranslator)target;
+        
+        Connections();
+        CornerTransforms();
+        RotationOptions();
+        CalibrateCornerButtons();
+        ClampCornerCalibrations();
+    }
+
+    public void Connections() {
         // Trilinear Interpolator
         GUILayout.Label("TriLinear Interpolator", EditorStyles.boldLabel);
         opt.trinterp = (TrilinearInterpolator)EditorGUILayout.ObjectField("TriLinear Interpolator",  opt.trinterp, typeof(TrilinearInterpolator), true);
@@ -26,7 +36,9 @@ public class OptitrackProjectorTranslatorEditor : Editor
         opt.optitrackPos = EditorGUILayout.Vector3Field("Optitrack Position", opt.optitrackPos);
         GUI.enabled = true;
         GUILayout.Space(10); 
+    }
 
+    public void CornerTransforms() {
         // Add slots for Corners
         GUILayout.Label("Corners", EditorStyles.boldLabel);
         opt.corner0 = (Transform)EditorGUILayout.ObjectField("Corner 0 [-1, -1, -1] (Left Lower Front)",  opt.corner0, typeof(Transform), true);
@@ -38,7 +50,9 @@ public class OptitrackProjectorTranslatorEditor : Editor
         opt.corner6 = (Transform)EditorGUILayout.ObjectField("Corner 6 [ 1,  1, -1] (Right Upper Front)", opt.corner6, typeof(Transform), true);
         opt.corner7 = (Transform)EditorGUILayout.ObjectField("Corner 7 [ 1,  1,  1] (Right Upper Back)",  opt.corner7, typeof(Transform), true);
         GUILayout.Space(10);  // Add spacing after the section
+    }
 
+    public void RotationOptions() {
         //Rotation Offsets
         GUILayout.Label("Rotation Offset", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
@@ -53,18 +67,7 @@ public class OptitrackProjectorTranslatorEditor : Editor
         opt.flipRotX = EditorGUILayout.Toggle("Flip Rot X", opt.flipRotX);
         opt.flipRotY = EditorGUILayout.Toggle("Flip Rot Y", opt.flipRotY);
         opt.flipRotZ = EditorGUILayout.Toggle("Flip Rot Z", opt.flipRotZ);
-        GUILayout.Space(10);  // Add spacing after the section
-
-        CalibrateCornerButtons();
-
-        //Clamp Corner Calibration Quick Helpers
-        GUILayout.Label("Clamp Corner Calibration", EditorStyles.boldLabel);
-        GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Clamp Cube Corners")) { opt.ClampCubeCorners(); }
-        if (GUILayout.Button("Clamp Cube Corners Z")) { opt.ClampCubeCornersZ(); }
-        GUILayout.EndHorizontal();
-        GUILayout.Space(10);  // Add spacing after the section
-
+        GUILayout.Space(10);
     }
 
     public void CalibrateCornerButtons() {
@@ -110,6 +113,16 @@ public class OptitrackProjectorTranslatorEditor : Editor
         // Reset the GUI background color to default
         GUI.backgroundColor = Color.white;
         GUILayout.Space(10);  
+    }
+    
+    public void ClampCornerCalibrations() {
+        //Clamp Corner Calibration Quick Helpers
+        GUILayout.Label("Clamp Corner Calibration", EditorStyles.boldLabel);
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Clamp Cube Corners")) { opt.ClampCubeCorners(); }
+        if (GUILayout.Button("Clamp Cube Corners Z")) { opt.ClampCubeCornersZ(); }
+        GUILayout.EndHorizontal();
+        GUILayout.Space(10); 
     }
 
 }

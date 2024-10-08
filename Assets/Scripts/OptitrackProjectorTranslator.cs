@@ -5,11 +5,13 @@ using UnityEngine;
 [System.Serializable]
 public class OptitrackProjectorTranslator : MonoBehaviour
 {
-
     public TrilinearInterpolator trinterp;
 
+    //Projector Stuff
     public Transform projector;
     public Vector3 projectorPos; //Diagnostic only
+    
+    //Optitrack Stuff
     public Transform optitrack;
     public Vector3 optitrackPos; //Diagnostic only
 
@@ -23,8 +25,10 @@ public class OptitrackProjectorTranslator : MonoBehaviour
     public Transform corner6; //Right Upper Front ( 1,  1, -1) [Alpha7]
     public Transform corner7; //Right Upper Back  ( 1,  1,  1) [Alpha8]
 
+    //Rotation Offset
     public Vector3 rotateOffset;
 
+    //Flip Rotation Options
     public bool flipRotX = false;
     public bool flipRotY = false;
     public bool flipRotZ = false;

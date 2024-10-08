@@ -120,7 +120,6 @@ public class CalibrationSaveLoad : MonoBehaviour
         opt.flipRotY = calibration.flipRotY;
         opt.flipRotZ = calibration.flipRotZ;
     }
-
 }
 
 [System.Serializable]

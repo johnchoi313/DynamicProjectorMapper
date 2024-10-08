@@ -5,27 +5,24 @@ using UnityEngine;
 [System.Serializable]
 public class ProjectorSize : MonoBehaviour
 {
-
-
-    public float projectorWidth; //In Meters
-    public float projectorHeight; //In Meters
-    public float projectorWidthIn = 1f;
-    public float projectorHeightIn = 1f;  // 1 meter = 3.28084 feet
-
+    public float projectorWidth = 0.355f; //(m)
+    public float projectorHeight = 0.28f; //(m)
+    public float projectorWidthIn = 14f;  //(in)
+    public float projectorHeightIn = 11f; //(in)
     public float projectorScaleFactor = 1.0f;
 
-    public float backgroundWidth;
-    public float backgroundHeight;
-    public float backgroundWidthIn;
-    public float backgroundHeightIn;
+    public float backgroundWidth = 4.44f;    //(m)
+    public float backgroundHeight = 2.5f;    //(m)
+    public float backgroundWidthIn = 174.8f; //(in)
+    public float backgroundHeightIn = 98.4f; //(in)
 
     public Transform projectorPlane;
     public Transform backgroundPlane;
     public List<Transform> cornerPlanes;
     
     public Camera camera;
-    public float cameraDistanceToBackground;
-    public float cameraFOV;
+    public float cameraDistanceToBackground = 5f;
+    public float cameraFOV = 25f;
     
     // Start is called before the first frame update
     public void UpdatePlaneScale() {
@@ -57,7 +54,6 @@ public class ProjectorSize : MonoBehaviour
             cornerPlane.gameObject.SetActive(true);
         }
         backgroundPlane.gameObject.SetActive(true);
-        Debug.Log("Planes scaled.");
         Debug.Log("All calibration objects shown.");
     }
     

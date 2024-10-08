@@ -24,9 +24,7 @@ public class TrilinearInterpolator : MonoBehaviour
     // Define the corners of the destination cube
     public Vector3[] destinationCubeCorners = new Vector3[8];
 
-
-    void Start()
-    {
+    void Start() {
         // Example input coordinate
         Vector3 inputCoordinate = new Vector3(0.5f, 0.5f, 0.5f);
 
@@ -36,8 +34,7 @@ public class TrilinearInterpolator : MonoBehaviour
     }
 
     // Perform trilinear interpolation from source to destination cube
-    public Vector3 TrilinearInterpolate(Vector3 input)
-    {
+    public Vector3 TrilinearInterpolate(Vector3 input) {
         // Clamp the input coordinate if clamping is enabled
         input = ClampCoordinate(input, sourceCubeCorners);
 
@@ -45,15 +42,11 @@ public class TrilinearInterpolator : MonoBehaviour
         Vector3 factors = GetInterpolationFactors(input, GetMinCorner(sourceCubeCorners), GetMaxCorner(sourceCubeCorners));
 
         // Interpolate the result using the destination cube corners
-
-
         return InterpolateCube(destinationCubeCorners, factors);
     }
 
-
     // Get interpolation factors for a given input coordinate
-    private Vector3 GetInterpolationFactors(Vector3 input, Vector3 minCorner, Vector3 maxCorner)
-    {
+    private Vector3 GetInterpolationFactors(Vector3 input, Vector3 minCorner, Vector3 maxCorner) {
         float xd = Mathf.InverseLerp(minCorner.x, maxCorner.x, input.x);
         float yd = Mathf.InverseLerp(minCorner.y, maxCorner.y, input.y);
         float zd = Mathf.InverseLerp(minCorner.z, maxCorner.z, input.z);
@@ -66,8 +59,7 @@ public class TrilinearInterpolator : MonoBehaviour
     }
 
     // Perform trilinear interpolation within a cube given interpolation factors
-    private Vector3 InterpolateCube(Vector3[] cubeCorners, Vector3 factors)
-    {
+    private Vector3 InterpolateCube(Vector3[] cubeCorners, Vector3 factors) {
         Vector3 p000 = cubeCorners[0] + new Vector3(fudgeMinX, fudgeMinY, fudgeMinZ); //Left Lower Front  (-1, -1, -1) [Alpha1]
         Vector3 p001 = cubeCorners[1] + new Vector3(fudgeMinX, fudgeMinY, fudgeMaxZ); //Left Lower Back   (-1, -1,  1) [Alpha2]
         Vector3 p010 = cubeCorners[2] + new Vector3(fudgeMinX, fudgeMaxY, fudgeMinZ); //Left Upper Front  (-1,  1, -1) [Alpha3]
@@ -98,9 +90,7 @@ public class TrilinearInterpolator : MonoBehaviour
         ClampCubeCorners(sourceCubeCorners);
         ClampCubeCornersZ(destinationCubeCorners);
     }
-
-    private void ClampCubeCornersZ(Vector3[] cubeCorners)
-    {
+    private void ClampCubeCornersZ(Vector3[] cubeCorners) {
         Vector3 minCorner = GetMinVector(cubeCorners);
         Vector3 maxCorner = GetMaxVector(cubeCorners);
 
@@ -119,8 +109,7 @@ public class TrilinearInterpolator : MonoBehaviour
         cubeCorners[7] = new Vector3(maxCorner.x, maxCorner.y, z4);
     }
 
-    private void ClampCubeCorners(Vector3[] cubeCorners)
-    {
+    private void ClampCubeCorners(Vector3[] cubeCorners) {
         Vector3 minCorner = GetMinVector(cubeCorners);
         Vector3 maxCorner = GetMaxVector(cubeCorners);
 
@@ -135,12 +124,9 @@ public class TrilinearInterpolator : MonoBehaviour
     }
 
     // Clamp the input coordinate to be within the bounds of the source cube
-    private Vector3 ClampCoordinate(Vector3 input, Vector3[] cubeCorners)
-    {
+    private Vector3 ClampCoordinate(Vector3 input, Vector3[] cubeCorners) {
         Vector3 minCorner = GetMinVector(cubeCorners);
         Vector3 maxCorner = GetMaxVector(cubeCorners);
-        //Vector3 minCorner = GetMinCorner(cubeCorners);
-        //Vector3 maxCorner = GetMaxCorner(cubeCorners);
 
         float clampedX = Mathf.Clamp(input.x, minCorner.x, maxCorner.x);
         float clampedY = Mathf.Clamp(input.y, minCorner.y, maxCorner.y);
@@ -149,70 +135,53 @@ public class TrilinearInterpolator : MonoBehaviour
         return new Vector3(clampedX, clampedY, clampedZ);
     }
 
-    private Vector3 GetMinCorner(Vector3[] corners)
-    {
+    private Vector3 GetMinCorner(Vector3[] corners) {
         Vector3 minCorner = corners[0];
-        foreach (var corner in corners)
-        {
+        foreach (var corner in corners) {
             minCorner = Vector3.Min(minCorner, corner);
         }
         return minCorner;
     }
 
-    private Vector3 GetMaxCorner(Vector3[] corners)
-    {
+    private Vector3 GetMaxCorner(Vector3[] corners) {
         Vector3 maxCorner = corners[0];
-        foreach (var corner in corners)
-        {
+        foreach (var corner in corners) {
             maxCorner = Vector3.Max(maxCorner, corner);
         }
         return maxCorner;
     }
 
     // Function to get the minimum vector from an array of vectors
-    public static Vector3 GetMinVector(Vector3[] vectors)
-    {
-        if (vectors == null || vectors.Length == 0)
-        {
+    public static Vector3 GetMinVector(Vector3[] vectors) {
+        if (vectors == null || vectors.Length == 0) {
             Debug.LogError("The vector array is null or empty.");
             return Vector3.zero; // Return a default value or handle as needed
         }
-
         // Initialize minVector with the first vector in the array
         Vector3 minVector = vectors[0];
-
         // Iterate through the array to find the minimum vector
-        foreach (var vector in vectors)
-        {
+        foreach (var vector in vectors) {
             minVector.x = Mathf.Min(minVector.x, vector.x);
             minVector.y = Mathf.Min(minVector.y, vector.y);
             minVector.z = Mathf.Min(minVector.z, vector.z);
         }
-
         return minVector;
     }
 
     // Function to get the maximum vector from an array of vectors
-    public static Vector3 GetMaxVector(Vector3[] vectors)
-    {
-        if (vectors == null || vectors.Length == 0)
-        {
+    public static Vector3 GetMaxVector(Vector3[] vectors) {
+        if (vectors == null || vectors.Length == 0) {
             Debug.LogError("The vector array is null or empty.");
             return Vector3.zero; // Return a default value or handle as needed
         }
-
         // Initialize maxVector with the first vector in the array
         Vector3 maxVector = vectors[0];
-
         // Iterate through the array to find the maximum vector
-        foreach (var vector in vectors)
-        {
+        foreach (var vector in vectors) {
             maxVector.x = Mathf.Max(maxVector.x, vector.x);
             maxVector.y = Mathf.Max(maxVector.y, vector.y);
             maxVector.z = Mathf.Max(maxVector.z, vector.z);
         }
-
         return maxVector;
     }
-
 }

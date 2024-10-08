@@ -61,7 +61,6 @@ public class ProjectorSizeEditor : Editor
         GUILayout.Space(10); 
     }
 
-
     private void BackgroundElements() {
         // Length field (Linked meters and feet)
         GUILayout.Label("Background Width and Height (Meters and Feet)", EditorStyles.boldLabel);
@@ -82,7 +81,6 @@ public class ProjectorSizeEditor : Editor
             ps.backgroundWidth = ps.backgroundWidthIn / 39.3701f; 
             ps.UpdateBackgroundScale();
         }
-        // End the horizontal layout
         GUILayout.EndHorizontal();  
 
         GUILayout.BeginHorizontal(); 
@@ -100,15 +98,12 @@ public class ProjectorSizeEditor : Editor
             ps.backgroundHeight = ps.backgroundHeightIn / 39.3701f; 
             ps.UpdateBackgroundScale();
         }
-        // End the horizontal layout
         GUILayout.EndHorizontal();  
-        GUILayout.Space(10);  // Add psacing after the section
+        GUILayout.Space(10);  
     }
+
     private void CameraElements() {
-
-        //Camera settings
         GUILayout.Label("Camera Settings", EditorStyles.boldLabel);
-
         ps.camera = (Camera)EditorGUILayout.ObjectField("Camera",  ps.camera, typeof(Camera), true);
         
         ps.cameraDistanceToBackground = EditorGUILayout.FloatField("Camera Distance to Background (m)", ps.cameraDistanceToBackground);
@@ -119,22 +114,17 @@ public class ProjectorSizeEditor : Editor
         ps.cameraFOV = EditorGUILayout.FloatField("Camera FOV (degrees)", ps.cameraFOV);
         if (EditorGUI.EndChangeCheck()) { ps.UpdateCamera(); }
 
-        
         if (GUILayout.Button("Calculate Camera FOV")) { 
             ps.cameraFOV = Mathf.Atan((ps.backgroundWidth*0.5f) / ps.cameraDistanceToBackground) * 57.2958f;
             ps.UpdateBackgroundScale();
             ps.UpdateCamera();
         }
         
-
         GUILayout.EndHorizontal();  
-        
-        GUILayout.Space(10);  // Add psacing after the section
+        GUILayout.Space(10);  
     }
 
     private void CornerElements() {
-        
-
         // First row of buttons (top corners of the cube)
         GUILayout.Label("Calibrate Back Corners", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
@@ -147,8 +137,7 @@ public class ProjectorSizeEditor : Editor
 
         //Corner Planes List
         GUILayout.Label("List of Corner Planes", EditorStyles.boldLabel);
-
-        // Display each Vector3 in the list with a field and remove button
+        // Display each plane in the list with a field and remove button
         for (int i = 0; i < ps.cornerPlanes.Count; i++) {
             GUILayout.BeginHorizontal();
             ps.cornerPlanes[i] = (Transform)EditorGUILayout.ObjectField("Corner Plane " + i,  ps.cornerPlanes[i], typeof(Transform), true);
@@ -162,8 +151,6 @@ public class ProjectorSizeEditor : Editor
         if (GUILayout.Button("Add New Corner Plane Object")) {
             ps.cornerPlanes.Add(null);  
         }
-        GUILayout.Space(10);  // Add psacing after the section
-
+        GUILayout.Space(10);  
     }
-
 }
