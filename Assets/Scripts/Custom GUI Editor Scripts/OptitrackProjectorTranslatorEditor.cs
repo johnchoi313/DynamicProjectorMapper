@@ -38,17 +38,21 @@ public class OptitrackProjectorTranslatorEditor : Editor
         GUILayout.Space(10); 
     }
 
+    private bool showCornerList = false;
     public void CornerTransforms() {
         // Add slots for Corners
-        GUILayout.Label("Corners", EditorStyles.boldLabel);
-        opt.corner0 = (Transform)EditorGUILayout.ObjectField("Corner 0 [-1, -1, -1] (Left Lower Front)",  opt.corner0, typeof(Transform), true);
-        opt.corner1 = (Transform)EditorGUILayout.ObjectField("Corner 1 [-1, -1,  1] (Left Lower Back)",   opt.corner1, typeof(Transform), true);
-        opt.corner2 = (Transform)EditorGUILayout.ObjectField("Corner 2 [-1,  1, -1] (Left Upper Front)",  opt.corner2, typeof(Transform), true);
-        opt.corner3 = (Transform)EditorGUILayout.ObjectField("Corner 3 [-1,  1,  1] (Left Upper Back)",   opt.corner3, typeof(Transform), true);
-        opt.corner4 = (Transform)EditorGUILayout.ObjectField("Corner 4 [ 1, -1, -1] (Right Lower Front)", opt.corner4, typeof(Transform), true);
-        opt.corner5 = (Transform)EditorGUILayout.ObjectField("Corner 5 [ 1, -1,  1] (Right Lower Back)",  opt.corner5, typeof(Transform), true);
-        opt.corner6 = (Transform)EditorGUILayout.ObjectField("Corner 6 [ 1,  1, -1] (Right Upper Front)", opt.corner6, typeof(Transform), true);
-        opt.corner7 = (Transform)EditorGUILayout.ObjectField("Corner 7 [ 1,  1,  1] (Right Upper Back)",  opt.corner7, typeof(Transform), true);
+        GUILayout.Label("Corner Transforms", EditorStyles.boldLabel);
+        showCornerList = EditorGUILayout.Foldout(showCornerList, "List of Corner Transforms");
+        if (showCornerList) {
+            opt.corner0 = (Transform)EditorGUILayout.ObjectField("Corner 0 [-1, -1, -1] (Left Lower Front)",  opt.corner0, typeof(Transform), true);
+            opt.corner1 = (Transform)EditorGUILayout.ObjectField("Corner 1 [-1, -1,  1] (Left Lower Back)",   opt.corner1, typeof(Transform), true);
+            opt.corner2 = (Transform)EditorGUILayout.ObjectField("Corner 2 [-1,  1, -1] (Left Upper Front)",  opt.corner2, typeof(Transform), true);
+            opt.corner3 = (Transform)EditorGUILayout.ObjectField("Corner 3 [-1,  1,  1] (Left Upper Back)",   opt.corner3, typeof(Transform), true);
+            opt.corner4 = (Transform)EditorGUILayout.ObjectField("Corner 4 [ 1, -1, -1] (Right Lower Front)", opt.corner4, typeof(Transform), true);
+            opt.corner5 = (Transform)EditorGUILayout.ObjectField("Corner 5 [ 1, -1,  1] (Right Lower Back)",  opt.corner5, typeof(Transform), true);
+            opt.corner6 = (Transform)EditorGUILayout.ObjectField("Corner 6 [ 1,  1, -1] (Right Upper Front)", opt.corner6, typeof(Transform), true);
+            opt.corner7 = (Transform)EditorGUILayout.ObjectField("Corner 7 [ 1,  1,  1] (Right Upper Back)",  opt.corner7, typeof(Transform), true);
+        }
         GUILayout.Space(10);  // Add spacing after the section
     }
 

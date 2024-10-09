@@ -142,6 +142,7 @@ public class ProjectorSizeEditor : Editor
         GUILayout.Space(10);  
     }
 
+    private bool showCornerList = false;
     private void CornerElements() {
         // First row of buttons (top corners of the cube)
         GUILayout.Label("Calibrate Back Corners", EditorStyles.boldLabel);
@@ -154,20 +155,23 @@ public class ProjectorSizeEditor : Editor
         GUILayout.Space(10);  
 
         //Corner Planes List
-        GUILayout.Label("List of Corner Planes", EditorStyles.boldLabel);
-        // Display each plane in the list with a field and remove button
-        for (int i = 0; i < ps.cornerPlanes.Count; i++) {
-            GUILayout.BeginHorizontal();
-            ps.cornerPlanes[i] = (Transform)EditorGUILayout.ObjectField("Corner Plane " + i,  ps.cornerPlanes[i], typeof(Transform), true);
-            if (GUILayout.Button("Remove", GUILayout.Width(70))) {
-                ps.cornerPlanes.RemoveAt(i);
-                break;  // To avoid modifying the list while iterating
+        GUILayout.Label("Corner Planes", EditorStyles.boldLabel);
+        showCornerList = EditorGUILayout.Foldout(showCornerList, "List of Corner Planes");
+        if (showCornerList) {
+            // Display each plane in the list with a field and remove button
+            for (int i = 0; i < ps.cornerPlanes.Count; i++) {
+                GUILayout.BeginHorizontal();
+                ps.cornerPlanes[i] = (Transform)EditorGUILayout.ObjectField("Corner Plane " + i,  ps.cornerPlanes[i], typeof(Transform), true);
+                if (GUILayout.Button("Remove", GUILayout.Width(70))) {
+                    ps.cornerPlanes.RemoveAt(i);
+                    break;  // To avoid modifying the list while iterating
+                }
+                GUILayout.EndHorizontal();
             }
-            GUILayout.EndHorizontal();
-        }
-        // Button to add a new default null cornerPlane to the list     
-        if (GUILayout.Button("Add New Corner Plane Object")) {
-            ps.cornerPlanes.Add(null);  
+            // Button to add a new default null cornerPlane to the list     
+            if (GUILayout.Button("Add New Corner Plane Object")) {
+                ps.cornerPlanes.Add(null);  
+            }
         }
         GUILayout.Space(10);  
     }

@@ -8,12 +8,16 @@ public class CalibrationSaveLoadEditor : Editor
 {
     CalibrationSaveLoad csl;
 
+    private bool showConnections = false;
     public override void OnInspectorGUI() { csl = (CalibrationSaveLoad)target;
         //Script Connections to Save/Load
         GUILayout.Label("Script Connections", EditorStyles.boldLabel);
-        csl.ps = (ProjectorSize)EditorGUILayout.ObjectField("Projector Size Script",  csl.ps, typeof(ProjectorSize), true);
-        csl.ti = (TrilinearInterpolator)EditorGUILayout.ObjectField("Trilinear Interpolator Script",  csl.ti, typeof(TrilinearInterpolator), true);
-        csl.opt = (OptitrackProjectorTranslator)EditorGUILayout.ObjectField("Optitrack Projector Translator Script",  csl.opt, typeof(OptitrackProjectorTranslator), true);
+        showConnections = EditorGUILayout.Foldout(showConnections, "Connections");
+        if (showConnections) {
+            csl.ps = (ProjectorSize)EditorGUILayout.ObjectField("Projector Size Script",  csl.ps, typeof(ProjectorSize), true);
+            csl.ti = (TrilinearInterpolator)EditorGUILayout.ObjectField("Trilinear Interpolator Script",  csl.ti, typeof(TrilinearInterpolator), true);
+            csl.opt = (OptitrackProjectorTranslator)EditorGUILayout.ObjectField("Optitrack Projector Translator Script",  csl.opt, typeof(OptitrackProjectorTranslator), true);
+        }
         GUILayout.Space(10);  
 
         //Save/Load Calibration Buttons
